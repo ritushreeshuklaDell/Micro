@@ -1,0 +1,21 @@
+{"appenders": [
+    {
+        "type": "console",
+        "layout": {
+            "type": "pattern",
+            "pattern": "%m"
+        },
+        "category": "app"
+    },{
+        "category": "micro-file-appender",
+        "type": "file",
+        "filename": "log_file.log",
+        "maxLogSize": 10240,
+        "backups": 3,
+        "layout": {
+            "type": "pattern",
+            "pattern": "%d{yyyy-MM-dd hh:mm:ss,SSS} %-5p %m"
+        }
+    }
+],
+"replaceConsole": true }

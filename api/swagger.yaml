@@ -1,0 +1,111 @@
+---
+swagger: "2.0"
+info:
+  description: "To verify income , expenditure and employer of an account(s)"
+  version: "1.00"
+  title: "accountverification"
+host: "10.64.200.118:10010"
+schemes:
+- "http"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /pdi/accounts/{resourceID}:
+    get:
+      description: "returns verification information for a account(s) for either income\
+        \ or expenditure or employer on basis of verify filter."
+      operationId: "pdiAccountsResourceIDGET"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "resourceID"
+        in: "path"
+        description: "Combination of SortCode+ AccountID  .The parameters needs to\
+          \ be ordered"
+        required: true
+        type: "string"
+      - name: "accountHolderName"
+        in: "query"
+        description: "Name of Account Holder"
+        required: true
+        type: "string"
+      - name: "verificationType"
+        in: "query"
+        description: "Filter used to determine types of verification info  "
+        required: true
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "IN"
+          - "EMP"
+          - "EX"
+      
+      responses:
+        200:
+          description: "An PDI account with basic details and verification information."
+          schema:
+            $ref: "#/definitions/Account"
+          examples:
+            application/json:
+              Account:
+                sortcode: "42397878"
+                accountID: "849490309"
+                accountHolderName: "Ritu"
+                incomeVerification: "Verified and positive"
+                employerVerification: "Dell Employee"
+                expenditureVerification: "Not defaulter"
+        404:
+          description: "No Data Found."
+          schema:
+            $ref: "#/definitions/Error"
+          examples:
+            errorCode: "BUS01"
+            errorReason: "No matching data found in backend"
+        500:
+          description: "Underlying system error."
+          schema:
+            $ref: "#/definitions/Error"
+          examples:
+            errorCode: "BUS02"
+            errorReason: "Error from Backend"
+      x-swagger-router-controller: "Default"
+definitions:
+  Account:
+    type: "object"
+    required:
+    - "accountHolderName"
+    - "accountID"
+    - "sortcode"
+    properties:
+      sortcode:
+        type: "string"
+        description: "Sortcode of an account"
+      accountID:
+        type: "string"
+        description: "Identifier of an account"
+      accountHolderName:
+        type: "string"
+        description: "Name  of the account holder"
+      incomeVerification:
+        type: "string"
+        description: "Income verification of an account"
+      employerVerification:
+        type: "string"
+        description: "Employer verification of an account"
+      expenditureVerification:
+        type: "string"
+        description: "Expenditure Verification of an account"
+  Error:
+    type: "object"
+    required:
+    - "errorCode"
+    - "errorReason"
+    properties:
+      errorCode:
+        type: "string"
+      errorReason:
+        type: "string"
